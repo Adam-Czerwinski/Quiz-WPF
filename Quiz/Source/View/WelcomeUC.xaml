@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="Quiz.Source.View.WelcomeUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Quiz"
+             mc:Ignorable="d" 
+             d:DesignHeight="560" d:DesignWidth="800"
+             DataContext="{Binding Welcome, Source={StaticResource Locator}}">
+
+    <UserControl.Resources>
+        <!--Styl dla nagłówka-->
+        <Style TargetType="Label" x:Key="labelHeader">
+            <Setter Property="FontSize" Value="50"/>
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0 0 0 20"/>
+        </Style>
+        <!--Styl dla szczegółów pytania-->
+        <Style TargetType="Label" x:Key="labelDetails">
+            <Setter Property="FontSize" Value="26"/>
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <!--Styl dla przycisku rozpoczynajacego quiz-->
+        <Style TargetType="Button" x:Key="buttonStartQuiz">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+        <!--Konwertuje wartość boolowską do wartości Visible dla kontrolki. Jeżeli false to ukrywa kontrolkę.-->
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+
+    <Grid>
+        <!--User Control będzie posiadał Grida mającego 3 wiersze-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <!--#region Pierwszy wiersz dla głównego Grid'a -->
+        <Label Grid.Row="0" Content="Wybierz Quiz" Style="{StaticResource labelHeader}"/>
+        <!--#endregion-->
+
+        <!--#region Drugi wiersz dla głównego Grid'a-->
+        <Grid Grid.Row="1">
+            <!--Drugi wiersz będzie składać się z Grida, który składa się z trzech kolumn-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="12*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12*" />
+            </Grid.ColumnDefinitions>
+
+            <!--#region Pierwsza kolumna - Lista quizów-->
+            <ListView Grid.Column="0" ItemsSource="{Binding Tests, Mode=OneTime}" SelectedItem="{Binding SelectedTest, Mode=OneWayToSource}">
+
+                <!--Style należące do kontrolki ListView-->
+                <ListView.Resources>
+                    <!--#region styl dla kolumn-->
+                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                        <Setter Property="FontWeight" Value="Medium"/>
+                        <Setter Property="FontSize" Value="13"/>
+                        <Setter Property="Height" Value="25"/>
+                        <Setter Property="Margin" Value="1"/>
+                    </Style>
+                    <!--#endregion-->
+
+                    <!--#region styl itemów kolumn-->
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <!--Style.Triggers - apply property values based on specified conditions.-->
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="FontSize" Value="13" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <!--#endregion-->
+                </ListView.Resources>
+
+                <!--Odpowiada za wyświetlanie kolumn i wartości-->
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="ID" DisplayMemberBinding="{Binding ID, Mode=OneTime}"/>
+                        <GridViewColumn Header="Nazwa testu" DisplayMemberBinding="{Binding TestName, Mode=OneTime}"/>
+                    </GridView>
+                </ListView.View>
+
+            </ListView>
+            <!--#endregion-->
+
+            <!--#region Trzecia kolumna - Szczegóły-->
+            <StackPanel Grid.Column="2" Visibility="{Binding isSelected, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
+                <StackPanel.Resources >
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="17"/>
+                        <Setter Property="FontFamily" Value="Comic Sans MS"/>
+                    </Style>
+                </StackPanel.Resources>
+
+                <Label Content="Szczegóły" Style="{StaticResource labelDetails}"/>
+
+                <Grid Margin="10 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                        <TextBlock Text="Wybrany quiz: "/>
+                        <TextBlock Text="{Binding SelectedTest.TestName}" Foreground="Red"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
+                        <TextBlock Text="Ilość pytań: "/>
+                        <TextBlock Text="{Binding NumberOfQuestion, UpdateSourceTrigger=PropertyChanged}" Foreground="Blue"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5">
+                        <TextBlock Text="Kategoria: "/>
+                        <TextBlock Text="{Binding SelectedTest.Category, UpdateSourceTrigger=PropertyChanged}" Foreground="Yellow"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--#endregion-->
+
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region Trzeci wiersz dla głównego Grid'a-->
+        <Button Grid.Row="2" Content="Rozpocznij Quiz" HorizontalAlignment="Center" Style="{StaticResource buttonStartQuiz}"
+                    Command="{Binding StartQuizCommand}"/>
+        <!--Visibility="{Binding isSelected, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}"-->
+        <!--#endregion-->
+    </Grid>
+
+</UserControl>
+ 
