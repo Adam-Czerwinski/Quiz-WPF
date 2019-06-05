@@ -78,6 +78,8 @@
       <DependentUpon>DBInfo.resx</DependentUpon>
     </Compile>
     <Compile Include="Source\DataAccessLayer\QuizRepository.cs" />
+    <Compile Include="Source\Dialogs\AsyncUtil.cs" />
+    <Compile Include="Source\Dialogs\DialogService.cs" />
     <Compile Include="Source\Messaging\Notifications.cs" />
     <Compile Include="Source\Model\Question.cs" />
     <Compile Include="Source\Model\Test.cs" />

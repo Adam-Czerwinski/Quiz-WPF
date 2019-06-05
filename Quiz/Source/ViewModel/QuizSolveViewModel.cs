@@ -4,9 +4,13 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
 using Quiz.Source.DataAccessLayer;
+using Quiz.Source.Dialogs;
 using Quiz.Source.Messaging;
 using Quiz.Source.Model;
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -27,6 +31,7 @@ namespace Quiz.Source.ViewModel
         private int _score;
         private bool[][] _userAnswersABCDCheckBoxes;
         private string[][] _userAnswers;
+        private IDialogService _dialogService;
         #endregion
 
         #region Properties
@@ -136,8 +141,10 @@ namespace Quiz.Source.ViewModel
         }
         #endregion
 
-        public QuizSolveViewModel()
+        public QuizSolveViewModel(DialogService dialogService)
         {
+            _dialogService = dialogService;
+
             #region Zdarzenia
             Messenger.Default.Register<Test>(this, Notifications.SetUpThisQuiz, ReceiveChoosenTest);
             #endregion
@@ -189,7 +196,14 @@ namespace Quiz.Source.ViewModel
         public ICommand QuitQuizCommand { get; private set; }
         private void QuitQuiz()
         {
-            Messenger.Default.Send("notification", Notifications.ChangeMainViewToWelcome);
+            string message = "Czy chcesz wyjść z quizu?";
+            string title = "Wyjście do menu głównego";
+
+            //uruchom metodę asynchroniczną synchronicznie
+            bool result = AsyncUtil.RunSync<bool>(() => _dialogService.ShowMessage(message, title,null, null, null));
+
+            if (result)
+                Messenger.Default.Send("notification", Notifications.ChangeMainViewToWelcome);
         }
 
         /// <summary>
@@ -204,9 +218,23 @@ namespace Quiz.Source.ViewModel
             else
                 SubmitQuiz();
         }
+        private void NextQuestion()
+        {
+            CurrentQuestion = _questions[CurrentQuestionIndex++];
+        }
+        private void SubmitQuiz()
+        {
+            GetUserAnswers();
+            GetUserScore();
+
+            string title = "Wynik";
+            string message = $"Uzyskano { _score} na {NumberOfQuestions} punktów";
+
+            //uruchom metodę asynchroniczną synchronicznie
+            AsyncUtil.RunSync(() => _dialogService.ShowMessage(message,title,null,() => Messenger.Default.Send("notification", Notifications.ChangeMainViewToWelcome)));
+        }
         private void GetUserAnswers()
         {
-
             int ileZaznaczonychOdpowiedzi;
             for (int i = 0; i < NumberOfQuestions; i++)
             {
@@ -259,14 +287,8 @@ namespace Quiz.Source.ViewModel
             }
 
         }
-        private void NextQuestion()
+        private void GetUserScore()
         {
-            CurrentQuestion = _questions[CurrentQuestionIndex++];
-        }
-        private void SubmitQuiz()
-        {
-            GetUserAnswers();
-
             //Sprawdza odpowiedzi użytkownika z poprawnymi odpowiedziami
             for (int i = 0; i < NumberOfQuestions; i++)
             {

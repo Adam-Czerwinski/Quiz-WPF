@@ -44,7 +44,7 @@ namespace Quiz.Source.ViewModel
                 CurrentViewModel = _quizSolveViewModel;
                 SimpleIoc.Default.Unregister(_welcomeViewModel);
             });
-            //nas³uchuj zdarzenia. W wyniku czego zmieñ QuizSolveViewModel na CurrentViewModel
+            //nas³uchuj zdarzenia. W wyniku czego zmieñ CurrentViewModel na WelcomeViewModel
             Messenger.Default.Register<string>(this, Notifications.ChangeMainViewToWelcome, obj =>
             {
                 //Podobnie jak wy¿ej

@@ -1,5 +1,6 @@
 using CommonServiceLocator;
 using GalaSoft.MvvmLight.Ioc;
+using Quiz.Source.Dialogs;
 using System;
 
 namespace Quiz.Source.ViewModel
@@ -16,6 +17,7 @@ namespace Quiz.Source.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<WelcomeViewModel>();
             SimpleIoc.Default.Register<QuizSolveViewModel>();
+            SimpleIoc.Default.Register<DialogService>();
         }
 
         public MainViewModel Main
@@ -39,6 +41,14 @@ namespace Quiz.Source.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<QuizSolveViewModel>();
+            }
+        }
+
+        public DialogService DialogService
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<DialogService>();
             }
         }
 
