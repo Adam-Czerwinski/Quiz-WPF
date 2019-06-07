@@ -1,7 +1,9 @@
 using CommonServiceLocator;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Views;
 using Quiz.Source.Dialogs;
 using System;
+using System.Diagnostics;
 
 namespace Quiz.Source.ViewModel
 {
@@ -14,10 +16,12 @@ namespace Quiz.Source.ViewModel
         public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+
+            SimpleIoc.Default.Register<IDialogService,DialogService>();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<WelcomeViewModel>();
             SimpleIoc.Default.Register<QuizSolveViewModel>();
-            SimpleIoc.Default.Register<DialogService>();
+
         }
 
         public MainViewModel Main
@@ -44,7 +48,7 @@ namespace Quiz.Source.ViewModel
             }
         }
 
-        public DialogService DialogService
+        public IDialogService DialogService
         {
             get
             {

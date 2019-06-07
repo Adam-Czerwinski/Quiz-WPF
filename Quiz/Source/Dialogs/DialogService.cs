@@ -113,6 +113,6 @@ namespace Quiz.Source.Dialogs
             await Task.Run(() => MessageBox.Show(message, title));
         }
 
-
+        public DialogService() { }
     }
 }

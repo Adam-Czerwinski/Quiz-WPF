@@ -12,7 +12,7 @@ namespace Quiz.Source.DataAccessLayer
         #region Queries
         private static string SELECT_ALL_TESTS_WITH_EXISTING_QUESTIONS(int minimumNumberOfQuestions)
         {
-            return @"SELECT t.`ID_Test`, t.`Test Name`, t.`category`
+            return @"SELECT t.`ID_Test`, t.`Test Name`, t.`category`,t.`Time`
             FROM Test t
 		        INNER JOIN `Test/Question` tq ON tq.ID_Test=t.ID_Test
                 INNER JOIN `Question` q ON q.ID_Question=tq.ID_Question
@@ -21,7 +21,7 @@ namespace Quiz.Source.DataAccessLayer
         }
         private static string SELECT_TEST_BY_ID(int ID)
         {
-            return "SELECT t.`Test Name` FROM test t WHERE t.`ID_Test`=" + ID + ";";
+            return "SELECT t.`ID_Test`, t.`Test Name`, t.`category`,t.`Time` FROM test t WHERE t.`ID_Test`=" + ID + ";";
         }
         private static string SELECT_NUMBER_OF_QUESTIONS_BY_TEST_ID(int ID)
         {
@@ -50,6 +50,7 @@ namespace Quiz.Source.DataAccessLayer
             int ID;
             string TestName;
             string Category;
+            int Time;
             using (MySqlCommand command = new MySqlCommand(SELECT_ALL_TESTS_WITH_EXISTING_QUESTIONS(minimumNumberOfQuestions), connection))
             {
                 connection.Open();
@@ -61,7 +62,8 @@ namespace Quiz.Source.DataAccessLayer
                     ID = Convert.ToInt32(dataReader["ID_Test"]);
                     TestName = dataReader["Test Name"].ToString();
                     Category = dataReader["category"].ToString();
-                    tests.Add(new Test(ID, TestName,Category));
+                    Time = Convert.ToInt32(dataReader["Time"]);
+                    tests.Add(new Test(ID, TestName,Category,Time));
                 }
                 dataReader.Close();
 
@@ -81,6 +83,7 @@ namespace Quiz.Source.DataAccessLayer
             Test test = null;
             string TestName;
             string Category;
+            int Time;
             using (MySqlCommand command = new MySqlCommand(SELECT_TEST_BY_ID(ID), connection))
             {
                 connection.Open();
@@ -90,7 +93,8 @@ namespace Quiz.Source.DataAccessLayer
                 {
                     TestName = dataReader["Test Name"].ToString();
                     Category = dataReader["category"].ToString();
-                    test = new Test(ID, TestName, Category);
+                    Time = Convert.ToInt32(dataReader["Time"]);
+                    test = new Test(ID, TestName, Category,Time);
                 }
                 dataReader.Close();
 

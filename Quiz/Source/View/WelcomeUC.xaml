@@ -108,19 +108,27 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
                         <TextBlock Text="Wybrany quiz: "/>
-                        <TextBlock Text="{Binding SelectedTest.TestName}" Foreground="Red"/>
+                        <TextBlock Text="{Binding SelectedTest.TestName, Mode=OneWay}" Foreground="Red"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
                         <TextBlock Text="Ilość pytań: "/>
-                        <TextBlock Text="{Binding NumberOfQuestion, UpdateSourceTrigger=PropertyChanged}" Foreground="Blue"/>
+                        <TextBlock Text="{Binding NumberOfQuestion, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Foreground="Blue"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5">
                         <TextBlock Text="Kategoria: "/>
-                        <TextBlock Text="{Binding SelectedTest.Category, UpdateSourceTrigger=PropertyChanged}" Foreground="Yellow"/>
+                        <TextBlock Text="{Binding SelectedTest.Category, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Foreground="Yellow"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="5">
+                        <TextBlock>
+                            <Run Text="Czas: "/>
+                            <Run Text="{Binding SelectedTest.Time, UpdateSourceTrigger=PropertyChanged,Mode=OneWay}" Foreground="Green"/>
+                            <Run Text="sekund" Foreground="Green"/>
+                        </TextBlock>
                     </StackPanel>
                 </Grid>
             </StackPanel>

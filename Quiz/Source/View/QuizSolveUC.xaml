@@ -119,11 +119,16 @@
         <DockPanel Grid.Row="2">
             <!--#region Info-->
             <StackPanel Margin="10">
-                <TextBlock Padding="5">
-                      <Run Text="Pytanie "/>
+                <TextBlock Padding="0 5">
+                      <Run Text="Pytanie: "/>
                       <Run Text="{Binding CurrentQuestionIndex,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                       <Run Text="/"/>
                       <Run Text="{Binding NumberOfQuestions, Mode=OneTime}"/>
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Pozostaly czas: " />
+                    <Run Text="{Binding TimeLeft, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Run Text="sekund" />
                 </TextBlock>
             </StackPanel>
             <!--#endregion-->

@@ -17,12 +17,17 @@ namespace Quiz.Source.Model
         /// Kategoria testu
         /// </summary>
         public string Category { get; private set; }
+        /// <summary>
+        /// Czas na test w sekundach
+        /// </summary>
+        public int Time { get; private set; }
 
-        public Test(int ID, string TestName, string Category)
+        public Test(int ID, string TestName, string Category, int Time)
         {
             this.ID = ID;
             this.TestName = TestName;
             this.Category = Category;
+            this.Time = Time;
         }
     }
 }

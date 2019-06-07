@@ -35,4 +35,3 @@ D:\Studia\Sem4\Prog.ob.i.graf\CzwartaAplikacja-Quiz\QuizWPF\Quiz\obj\Debug\Quiz.
 D:\Studia\Sem4\Prog.ob.i.graf\CzwartaAplikacja-Quiz\QuizWPF\Quiz\obj\Debug\Quiz.csproj.CopyComplete
 D:\Studia\Sem4\Prog.ob.i.graf\CzwartaAplikacja-Quiz\QuizWPF\Quiz\obj\Debug\Quiz.exe
 D:\Studia\Sem4\Prog.ob.i.graf\CzwartaAplikacja-Quiz\QuizWPF\Quiz\obj\Debug\Quiz.pdb
-D:\Studia\Sem4\Prog.ob.i.graf\CzwartaAplikacja-Quiz\QuizWPF\Quiz\obj\Debug\Quiz.csprojAssemblyReference.cache

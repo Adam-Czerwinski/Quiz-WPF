@@ -1,18 +1,13 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using GalaSoft.MvvmLight.Views;
 using Quiz.Source.DataAccessLayer;
 using Quiz.Source.Dialogs;
 using Quiz.Source.Messaging;
 using Quiz.Source.Model;
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Views;
+using System.Timers;
 
 namespace Quiz.Source.ViewModel
 {
@@ -32,6 +27,8 @@ namespace Quiz.Source.ViewModel
         private bool[][] _userAnswersABCDCheckBoxes;
         private string[][] _userAnswers;
         private IDialogService _dialogService;
+        private int _timeLeft;
+        private Timer _timer;
         #endregion
 
         #region Properties
@@ -139,12 +136,29 @@ namespace Quiz.Source.ViewModel
                 RaisePropertyChanged();
             }
         }
+        /// <summary>
+        /// Pozostały czas na rozwiązanie quizu wyrażony w sekundach
+        /// </summary>
+        public int TimeLeft
+        {
+            get { return _timeLeft; }
+            set
+            {
+                _timeLeft = value;
+                RaisePropertyChanged();
+            }
+        }
         #endregion
 
-        public QuizSolveViewModel(DialogService dialogService)
+        public QuizSolveViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
 
+            //interwał co 1 sekundę
+            _timer = new Timer(1000);
+            _timer.Elapsed += _timer_Elapsed;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
             #region Zdarzenia
             Messenger.Default.Register<Test>(this, Notifications.SetUpThisQuiz, ReceiveChoosenTest);
             #endregion
@@ -159,6 +173,25 @@ namespace Quiz.Source.ViewModel
             QuitQuizCommand = new RelayCommand(QuitQuiz);
 
             #endregion
+        }
+
+        /// <summary>
+        /// Metoda wykonywująca się co określony czas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (TimeLeft > 0)
+                TimeLeft -= 1;
+            else if (TimeLeft == 0)
+            {
+                _timer.Stop();
+                _timer.AutoReset = false;
+                _timer.Enabled = false;
+                string title = "Koniec czasu!";
+                SubmitQuiz(title);
+            }
         }
 
         /// <summary>
@@ -184,10 +217,9 @@ namespace Quiz.Source.ViewModel
             else
                 _nextQuestionOrEndQuiz = NextQuestionContentValue.Zakończ.ToString();
 
-
-
             //ustaw temat na ten który otrzymałeś
             Test = obj;
+            TimeLeft = Test.Time;
         }
 
         /// <summary>
@@ -200,7 +232,7 @@ namespace Quiz.Source.ViewModel
             string title = "Wyjście do menu głównego";
 
             //uruchom metodę asynchroniczną synchronicznie
-            bool result = AsyncUtil.RunSync<bool>(() => _dialogService.ShowMessage(message, title,null, null, null));
+            bool result = AsyncUtil.RunSync<bool>(() => _dialogService.ShowMessage(message, title, null, null, null));
 
             if (result)
                 Messenger.Default.Send("notification", Notifications.ChangeMainViewToWelcome);
@@ -222,16 +254,16 @@ namespace Quiz.Source.ViewModel
         {
             CurrentQuestion = _questions[CurrentQuestionIndex++];
         }
-        private void SubmitQuiz()
+        private void SubmitQuiz(string title="Wynik")
         {
             GetUserAnswers();
             GetUserScore();
 
-            string title = "Wynik";
             string message = $"Uzyskano { _score} na {NumberOfQuestions} punktów";
 
+            //tytuł jest w parametrach
             //uruchom metodę asynchroniczną synchronicznie
-            AsyncUtil.RunSync(() => _dialogService.ShowMessage(message,title,null,() => Messenger.Default.Send("notification", Notifications.ChangeMainViewToWelcome)));
+            AsyncUtil.RunSync(() => _dialogService.ShowMessage(message, title, null, () => Messenger.Default.Send("notification", Notifications.ChangeMainViewToWelcome)));
         }
         private void GetUserAnswers()
         {
@@ -319,6 +351,7 @@ namespace Quiz.Source.ViewModel
         /// Akcja przycisku odpowiadającego za poprzednie pytanie
         /// </summary>
         public ICommand PreviousQuestionCommand { get; private set; }
+
         private void PreviousQuestion()
         {
             //Czemu taki SKOMPLIKOWANY ALGORYTM?
