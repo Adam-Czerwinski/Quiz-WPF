@@ -1,3 +1,2 @@
 # Quiz
-### Quiz napisany w języku C# w wersji .Net 4.6.2 przy użyciu WPF, MVVM,
-### MVVM Light oraz mashapps Metro
+### Quiz napisany w języku C# .Net 4.6.1 przy użyciu WPF, MVVM Design Pattern, MVVM Light Framework.
